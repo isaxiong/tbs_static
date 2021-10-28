@@ -15,9 +15,8 @@ import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
 
-
+const val TAG = "Xiong -- X5WebViewActivity"
 class X5WebViewActivity : Activity() {
-    val TAG = "X5WebViewActivity"
     var webView: WebView? = null
     var content:LinearLayout?=null
     var title = ""
@@ -45,19 +44,28 @@ class X5WebViewActivity : Activity() {
     override fun onResume() {
         super.onResume()
         Log.i(TAG, "onResume")
+
         if (QbSdk.canLoadX5(this)) {
             Log.i(TAG, "已安装好，直接显示")
             createWebview()
         } else {
             Log.i(TAG, "新安装")
-            Thread(Runnable {
-                val ok = QbSdk.preinstallStaticTbs(this)
-                runOnUiThread {
-                    Log.i(TAG, "安装结果：$ok")
-                    createWebview()
-                }
-            }).start()
+            val ok = QbSdk.preinstallStaticTbs(this)
+            Log.i(TAG, "安装结果：$ok")
+            createWebview()
+
+//            Thread(Runnable {
+//                val ok = QbSdk.preinstallStaticTbs(this)
+//                runOnUiThread {
+//                    Log.i(TAG, "安装结果：$ok")
+//                    createWebview()
+//                }
+//            }).start()
         }
+    }
+
+    private fun loadX5Kernel() {
+
     }
 
     private fun createWebview() {

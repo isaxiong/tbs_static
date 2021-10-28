@@ -7,6 +7,11 @@ import 'package:tbs_static/x5_webview.dart';
 
 
 class X5WebViewPage extends StatefulWidget {
+
+  final String x5DebugUrl = "http://debugtbs.qq.com";
+  final String url;
+  X5WebViewPage({this.url});
+
   @override
   _X5WebViewState createState() => _X5WebViewState();
 }
@@ -44,7 +49,7 @@ class _X5WebViewState extends State<X5WebViewPage> {
           child: Stack(
             children: <Widget>[
               X5WebView(
-                url: "http://debugtbs.qq.com",
+                url: widget.url ?? widget.x5DebugUrl,
                 javaScriptEnabled: true,
                 javascriptChannels:
                 JavascriptChannels(["X5Web", "Toast"], (name, data) {

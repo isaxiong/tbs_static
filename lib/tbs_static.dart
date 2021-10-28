@@ -69,7 +69,7 @@ class TbsStatic {
   ///获取x5的日志
   static Future<String> getCrashInfo() async {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      var res = await _channel.invokeMethod("getCarshInfo");
+      var res = await _channel.invokeMethod("getCrashInfo");
       return res;
     } else {
       return "";
