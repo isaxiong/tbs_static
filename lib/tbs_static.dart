@@ -12,9 +12,9 @@ class TbsStatic {
 
   ///打开原生X5WebView
   static Future<void> openWebActivity(String url,
-      {String title,bool landspace,
-      Map<String, String> headers,
-      InterceptUrlCallBack callback}) async {
+      {String? title, bool? landspace,
+      Map<String, String>? headers,
+      InterceptUrlCallBack? callback}) async {
     if (defaultTargetPlatform == TargetPlatform.android) {
       final Map<String, dynamic> params = <String, dynamic>{
         'title': title,
@@ -34,7 +34,7 @@ class TbsStatic {
           } catch (e) {
             print(e);
           }
-          return;
+          return Future.value(null);
         });
       }
       //这里很重要！
@@ -55,14 +55,13 @@ class TbsStatic {
     _channel.setMethodCallHandler((call) {
       switch (call.method) {
         case "onInstallFinish":
-          listener.onInstallFinish(call.arguments);
+          listener.onInstallFinish!(call.arguments);
           break;
         default:
           throw MissingPluginException(
               '${call.method} was invoked but has no handler');
-          break;
       }
-      return;
+      return Future.value(null);
     });
   }
 
@@ -84,7 +83,7 @@ typedef void InterceptUrlCallBack(String url, Map<String, String> headers);
 
 class X5SdkListener {
   ///安装内核借国
-  InstallFinish onInstallFinish;
+  InstallFinish? onInstallFinish;
 
   X5SdkListener(
       {@required this.onInstallFinish,});

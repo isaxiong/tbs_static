@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tbs_static/tbs_static.dart';
 import 'package:tbs_static_example/X5WebViewPage.dart';
+import 'package:tbs_static_example/web_view_flutter_page.dart';
 
 const String TAG = "Xiong -- X5WebViewActivity";
 void main() {
@@ -67,6 +68,16 @@ class _MyAppState extends State<MyApp> {
               },
             ),
 
+            new MaterialButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              child: new Text('跳转到Google Webview'),
+              onPressed: () async {
+                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                  return new WebViewFlutterPage(url: testUrl,);
+                }));
+              },
+            ),
           //   Text(
           //       "内核状态：\n${crashInfo == null ? "未加载" : isLoadOk ? "加载成功---\n" + crashInfo.toString() : "加载失败---\n" + crashInfo.toString()}"),
           ],
@@ -89,26 +100,26 @@ class _MyAppState extends State<MyApp> {
       Permission.storage,
     ].request();
     //判断权限
-    if (!(statuses[Permission.phone].isGranted &&
-        statuses[Permission.storage].isGranted)) {
+    if (!(statuses[Permission.phone]!.isGranted &&
+        statuses[Permission.storage]!.isGranted)) {
       showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
               content: Text("请同意所有权限后再尝试加载X5"),
               actions: [
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
                     child: Text("取消")),
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                       loadX5();
                     },
                     child: Text("再次加载")),
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                       openAppSettings();
@@ -140,7 +151,7 @@ class _MyAppState extends State<MyApp> {
           return AlertDialog(
             content: Text(msg),
             actions: [
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },

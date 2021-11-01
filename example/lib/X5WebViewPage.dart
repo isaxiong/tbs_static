@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tbs_static/tbs_static.dart';
-import 'dart:async';
 
 import 'package:tbs_static/x5_webview.dart';
 
@@ -9,7 +7,7 @@ import 'package:tbs_static/x5_webview.dart';
 class X5WebViewPage extends StatefulWidget {
 
   final String x5DebugUrl = "http://debugtbs.qq.com";
-  final String url;
+  final String? url;
   X5WebViewPage({this.url});
 
   @override
@@ -17,7 +15,7 @@ class X5WebViewPage extends StatefulWidget {
 }
 
 class _X5WebViewState extends State<X5WebViewPage> {
-  X5WebViewController _controller;
+  late X5WebViewController _controller;
   @override
   void initState() {
     super.initState();

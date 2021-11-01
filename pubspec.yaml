@@ -1,12 +1,11 @@
 name: tbs_static
 description: A new Flutter plugin.
 version: 0.0.1
-author:
 homepage:
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
-  flutter: ">=1.10.0"
+  sdk: ">=2.14.0 <3.0.0"
+  flutter: ">=2.5.0"
 
 dependencies:
   flutter:
