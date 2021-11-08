@@ -1,0 +1,101 @@
+{
+    "VERSIONCODE": "045806",
+    "RESOURCE": "",
+    "ENTRY": "tbs_jars_fusion_dex.jar:com.tencent.tbs.core.X5CoreEntryLegacy",
+    "FILES": [
+        {
+            "PATH": "tbs.conf"
+        },
+        {
+            "PATH": "native_ad_plugin_dex.jar",
+            "SEALED": [
+                "com.tencent",
+                "com.taf"
+            ]
+        },
+        {
+            "PATH": "video_impl_dex.jar",
+            "SEALED": [
+                "com.tencent",
+                "com.taf"
+            ]
+        },
+        {
+            "PATH": "apache_dex.jar",
+            "SEALED": [
+                "com.tencent",
+                "com.taf"
+            ]
+        },
+        {
+            "PATH": "native_ad.conf"
+        },
+        {
+            "PATH": "videores.apk"
+        },
+        {
+            "PATH": "res.apk"
+        },
+        {
+            "PATH": "tbs_jsapi_plugin.jar"
+        },
+        {
+            "PATH": "audio_base.jar"
+        },
+        {
+            "PATH": "tbs_sdk_extension_dex.jar",
+            "SEALED": [
+                "com.tencent",
+                "com.taf"
+            ]
+        },
+        {
+            "PATH": "tbs_bugly_dex.jar",
+            "SEALED": [
+                "com.tencent",
+                "com.taf"
+            ]
+        },
+        {
+            "PATH": "TencentLocationSDK.jar"
+        },
+        {
+            "PATH": "renderer_dex.jar",
+            "SEALED": [
+                "com.tencent",
+                "com.taf"
+            ]
+        },
+        {
+            "PATH": "tbs_jars_fusion_dex.jar",
+            "SEALED": [
+                "com.tencent",
+                "com.taf"
+            ]
+        },
+        {
+            "PATH": "libresources.so"
+        },
+        {
+            "PATH": "libTPGDecoder.so"
+        },
+        {
+            "PATH": "libwebp_base.so"
+        },
+        {
+            "PATH": "libmttwebview.so"
+        },
+        {
+            "PATH": "libSharpPDecoder.so"
+        },
+        {
+            "PATH": "libWxHevcDecoder.so"
+        },
+        {
+            "PATH": "libchrome_100_percent.so"
+        },
+        {
+            "PATH": "libzh-CN.so"
+        }
+    ]
+}
