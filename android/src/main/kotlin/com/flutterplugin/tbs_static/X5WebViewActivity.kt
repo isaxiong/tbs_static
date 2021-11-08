@@ -36,8 +36,8 @@ class X5WebViewActivity : Activity() {
         )
         content?.layoutParams = css
         setContentView(content)
-        title = intent.getStringExtra("title")
-        url= intent.getStringExtra("url")
+        intent.getStringExtra("title")?.let { title = it }
+        intent.getStringExtra("url")?.let { url = it }
         setTitle(title)
     }
 

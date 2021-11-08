@@ -10,6 +10,9 @@ class TbsStatic {
     return version;
   }
 
+  static bool _canUseX5 = false;
+  static bool get canUseX5 => _canUseX5;
+
   ///打开原生X5WebView
   static Future<void> openWebActivity(String url,
       {String? title, bool? landspace,
@@ -45,8 +48,8 @@ class TbsStatic {
   }
 
   static Future<bool> preinstallStaticTbs() async {
-    bool res =  await _channel.invokeMethod("preinstallStaticTbs");
-    return res;
+    _canUseX5 = await _channel.invokeMethod("preinstallStaticTbs");
+    return _canUseX5;
 
   }
 

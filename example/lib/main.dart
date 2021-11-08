@@ -87,49 +87,48 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  // var isLoad = false;
   void loadX5() async {
-    // if (isLoad) {
-    //   showMsg("你已经加载过x5内核了,如果需要重新加载，请重启");
-    //   return;
-    // }
-
-    //请求动态权限，6.0安卓及以上必有
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.phone,
-      Permission.storage,
-    ].request();
-    //判断权限
-    if (!(statuses[Permission.phone]!.isGranted &&
-        statuses[Permission.storage]!.isGranted)) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: Text("请同意所有权限后再尝试加载X5"),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("取消")),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      loadX5();
-                    },
-                    child: Text("再次加载")),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      openAppSettings();
-                    },
-                    child: Text("打开设置页面")),
-              ],
-            );
-          });
+    if (TbsStatic.canUseX5) {
+      showMsg("你已经加载过x5内核了,如果需要重新加载，请重启");
       return;
     }
+
+    //请求动态权限，6.0安卓及以上必有
+    // Map<Permission, PermissionStatus> statuses = await [
+    //   Permission.phone,
+    //   Permission.storage,
+    // ].request();
+    // //判断权限
+    // if (!(statuses[Permission.phone]!.isGranted &&
+    //     statuses[Permission.storage]!.isGranted)) {
+    //   showDialog(
+    //       context: context,
+    //       builder: (context) {
+    //         return AlertDialog(
+    //           content: Text("请同意所有权限后再尝试加载X5"),
+    //           actions: [
+    //             TextButton(
+    //                 onPressed: () {
+    //                   Navigator.pop(context);
+    //                 },
+    //                 child: Text("取消")),
+    //             TextButton(
+    //                 onPressed: () {
+    //                   Navigator.pop(context);
+    //                   loadX5();
+    //                 },
+    //                 child: Text("再次加载")),
+    //             TextButton(
+    //                 onPressed: () {
+    //                   Navigator.pop(context);
+    //                   openAppSettings();
+    //                 },
+    //                 child: Text("打开设置页面")),
+    //           ],
+    //         );
+    //       });
+    //   return;
+    // }
 
     var x5Load = await TbsStatic.preinstallStaticTbs();
     print(x5Load ? "X5内核成功加载" : "X5内核加载失败");
@@ -140,8 +139,6 @@ class _MyAppState extends State<MyApp> {
     //       "tbs_core_version" + x5CrashInfo.split("tbs_core_version")[1];
     // }
     // print("$TAG, x5Info = $x5CrashInfo");
-
-    // isLoad = true;
   }
 
   void showMsg(String msg) {

@@ -5,19 +5,16 @@ import android.content.Context
 import android.hardware.display.DisplayManager
 import android.os.Build
 import android.view.View
-import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient
-import com.tencent.smtt.export.external.interfaces.WebResourceRequest
+import com.tencent.smtt.export.external.interfaces.SslError
+import com.tencent.smtt.export.external.interfaces.SslErrorHandler
 import com.tencent.smtt.sdk.WebChromeClient
+import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
-import com.tencent.smtt.export.external.interfaces.SslError;
-import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
-import com.tencent.smtt.sdk.QbSdk
-import com.tencent.smtt.sdk.WebSettings
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 class X5WebView(private val context: Context, private val id: Int, private val params: Map<String, Any>, val messenger: BinaryMessenger? = null, private val containerView: View?) : PlatformView, MethodChannel.MethodCallHandler {
@@ -59,7 +56,7 @@ class X5WebView(private val context: Context, private val id: Int, private val p
                     webView.addJavascriptInterface(JavascriptChannel(name, channel, context), name)
                 }
             }
-            loadUrl(params["url"].toString())
+
             webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(p0: WebView?, p1: String?): Boolean {
 
@@ -90,9 +87,20 @@ class X5WebView(private val context: Context, private val id: Int, private val p
                     arg["progress"] = p1
                     channel.invokeMethod("onProgressChanged", arg)
                 }
+
+                override fun onReceivedTitle(p0: WebView?, p1: String?) {
+                    super.onReceivedTitle(p0, p1)
+                }
             }
 
-
+            if (params.containsKey("userAgent")) {
+                val userAgent = params["userAgent"] as String?
+                updateUserAgent(userAgent)
+            }
+            if (params.containsKey("initialUrl")) {
+                val url = params["initialUrl"] as String?
+                loadUrl(url)
+            }
         }
 
     }
@@ -172,11 +180,18 @@ class X5WebView(private val context: Context, private val id: Int, private val p
                     result.success(true)
                 }
             }
+            "getTitle" -> {
+                result.success(webView.title)
+            }
 
             else -> {
                 result.notImplemented()
             }
         }
+    }
+
+    private fun updateUserAgent(userAgent: String?) {
+        webView.settings.userAgentString = userAgent
     }
 
     override fun getView(): View {
