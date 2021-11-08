@@ -15,7 +15,7 @@ import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
 
-const val TAG = "Xiong -- X5WebViewActivity"
+const val TAG = "Xiong -- X5WebView"
 class X5WebViewActivity : Activity() {
     var webView: WebView? = null
     var content:LinearLayout?=null

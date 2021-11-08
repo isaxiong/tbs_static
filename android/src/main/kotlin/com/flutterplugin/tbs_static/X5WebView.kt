@@ -7,10 +7,7 @@ import android.os.Build
 import android.view.View
 import com.tencent.smtt.export.external.interfaces.SslError
 import com.tencent.smtt.export.external.interfaces.SslErrorHandler
-import com.tencent.smtt.sdk.WebChromeClient
-import com.tencent.smtt.sdk.WebSettings
-import com.tencent.smtt.sdk.WebView
-import com.tencent.smtt.sdk.WebViewClient
+import com.tencent.smtt.sdk.*
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -200,6 +197,16 @@ class X5WebView(private val context: Context, private val id: Int, private val p
 
     override fun dispose() {
         channel.setMethodCallHandler(null)
+
+        webView.clearCache(true)
+        webView.clearHistory()
+        webView.clearFormData()
+        webView.loadUrl("about:blank")
+        webView.stopLoading()
+        webView.removeAllViewsInLayout()
+        webView.removeAllViews()
+        webView.webChromeClient = null
+        webView.webViewClient = null
         webView.dispose()
         webView.destroy()
     }
