@@ -36,6 +36,10 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
+
+    packagingOptions {
+        doNotStrip '**/*.so'
+    }
 }
 
 dependencies {
