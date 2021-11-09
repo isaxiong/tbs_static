@@ -30,7 +30,7 @@
             android:launchMode="singleTask"
             android:alwaysRetainTaskState="true"
             android:theme="@style/windowtitlebgstyle"
-            >
+            android:process=":remote">
         </activity>
     </application>
 </manifest>

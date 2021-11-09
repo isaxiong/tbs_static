@@ -155,6 +155,7 @@ class X5WebViewActivity : Activity() {
             webView = null
         }
         super.onDestroy()
+        System.exit(0)
         Log.d(TAG, "onDestroy")
 //        webView?.destroy()
     }
