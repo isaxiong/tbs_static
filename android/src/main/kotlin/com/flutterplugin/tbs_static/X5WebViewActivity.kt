@@ -143,9 +143,20 @@ class X5WebViewActivity : Activity() {
     }
 
     override fun onDestroy() {
+        if (null != webView) {
+            webView?.clearCache(true)
+            webView?.clearHistory()
+            webView?.clearFormData()
+            webView?.loadUrl("about:blank")
+            webView?.stopLoading()
+            webView?.setWebChromeClient(null)
+            webView?.setWebViewClient(null)
+            webView?.destroy()
+            webView = null
+        }
         super.onDestroy()
         Log.d(TAG, "onDestroy")
-        webView?.destroy()
+//        webView?.destroy()
     }
 
     override fun onBackPressed() {
