@@ -1,14 +1,13 @@
 package com.flutterplugin.tbs_static
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import android.view.Window
-import android.view.WindowManager
+import android.view.LayoutInflater
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.tencent.smtt.export.external.interfaces.SslError
@@ -25,6 +24,7 @@ const val TAG = "Xiong -- X5WebView"
 class X5WebViewActivity : AppCompatActivity() {
     var webView: WebView? = null
     private lateinit var tvTitle: TextView
+    private lateinit var container: LinearLayout
     var webViewTitle: String? = null
     var url = "https://www.baidu.com"
     var landspace = false
@@ -36,8 +36,11 @@ class X5WebViewActivity : AppCompatActivity() {
 //            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
 //        }
         Log.d(TAG, "onCreate")
-        setStatusBar()
-        setContentView(R.layout.activity_x5_webview)
+        container = LayoutInflater.from(this)
+            .inflate(R.layout.activity_x5_webview, null, true) as LinearLayout
+        setContentView(container)
+        StatusBarUtil.setTransparencyStatusBar(this)
+        StatusBarUtil.setStatusBarMode(this, true)
         initView()
 
         intent.getStringExtra("title")?.let { webViewTitle = it }
@@ -78,7 +81,12 @@ class X5WebViewActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun createWebView() {
         //手动创建WebView，显示到容器中，这样就能保证WebView一定是在X5内核准备好后创建的
-        webView = findViewById<WebView>(R.id.webView)
+        webView = WebView(applicationContext)
+        val css = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+        container.addView(webView, css)
 
         webView?.webViewClient = webViewClient
         webView?.webChromeClient = webChromeClient
@@ -117,7 +125,10 @@ class X5WebViewActivity : AppCompatActivity() {
 
         override fun onReceivedError(p0: WebView?, p1: WebResourceRequest?, p2: WebResourceError?) {
             super.onReceivedError(p0, p1, p2)
-            Log.d(TAG, "webview onReceivedError :description : ${p2?.description}  errorCode :" + p2?.errorCode)
+            Log.d(
+                TAG,
+                "webview onReceivedError :description : ${p2?.description}  errorCode :" + p2?.errorCode
+            )
         }
 
         override fun onReceivedSslError(p0: WebView?, p1: SslErrorHandler?, p2: SslError?) {
@@ -165,19 +176,6 @@ class X5WebViewActivity : AppCompatActivity() {
             webView?.goBack()
         } else {
             finish()
-        }
-    }
-
-    /**
-     * 设置状态栏颜色为透明色
-     */
-    private fun setStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);//窗口透明的导航栏
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);//窗口透明的状态栏
-            requestWindowFeature(Window.FEATURE_NO_TITLE);//隐藏标题栏
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.statusBarColor = Color.TRANSPARENT;
         }
     }
 }
