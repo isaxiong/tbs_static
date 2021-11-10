@@ -15,7 +15,7 @@ class TbsStatic {
 
   ///打开原生X5WebView
   static Future<void> openWebActivity(String url,
-      {String? title, bool? landspace,
+      {String? title, bool? landSpace,
       Map<String, String>? headers,
       InterceptUrlCallBack? callback}) async {
     if (defaultTargetPlatform == TargetPlatform.android) {
@@ -23,7 +23,7 @@ class TbsStatic {
         'title': title,
         'url': url,
         'headers': headers,
-        'landspace': landspace,
+        'landSpace': landSpace,
         'isUrlIntercept': callback != null
       };
       if (callback != null) {

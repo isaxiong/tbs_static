@@ -57,7 +57,7 @@ public class TbsStaticPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         } else if (call.method == "openWebActivity") {
             val url = call.argument<String>("url")
             val title = call.argument<String>("title")
-            val landspace = call.argument<Boolean>("landspace")
+            val landspace = call.argument<Boolean>("landSpace")
             val headers = call.argument<HashMap<String, String>>("headers") ?: HashMap()
             val isUrlIntercept = call.argument<Boolean>("isUrlIntercept")
             val intent = Intent(mActivity, X5WebViewActivity::class.java)
@@ -65,7 +65,7 @@ public class TbsStaticPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             intent.putExtra("title", title)
             intent.putExtra("headers", headers)
             intent.putExtra("isUrlIntercept", isUrlIntercept)
-            intent.putExtra("landspace", landspace)
+            intent.putExtra("landSpace", landspace)
             mActivity?.startActivity(intent)
             result.success(null)
         } else if (call.method == "preinstallStaticTbs") {

@@ -15,4 +15,8 @@
 
     </style>
 
+    <style name="themeWebViewActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#FF4081</item>
+    </style>
+
 </resources>

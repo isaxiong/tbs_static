@@ -189,7 +189,7 @@ class _CreationParams {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'url': url,
+      'initialUrl': url,
       'javaScriptEnabled': javaScriptEnabled,
       "javascriptChannels": javascriptChannels
     };

@@ -1,11 +1,16 @@
 package com.flutterplugin.tbs_static
-import android.app.Activity
-import android.content.pm.ActivityInfo
+
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
-import android.widget.LinearLayout
+import android.view.Window
+import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.tencent.smtt.export.external.interfaces.SslError
 import com.tencent.smtt.export.external.interfaces.SslErrorHandler
 import com.tencent.smtt.export.external.interfaces.WebResourceError
@@ -16,29 +21,27 @@ import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
 
 const val TAG = "Xiong -- X5WebView"
-class X5WebViewActivity : Activity() {
+
+class X5WebViewActivity : AppCompatActivity() {
     var webView: WebView? = null
-    var content:LinearLayout?=null
-    var title = ""
+    private lateinit var tvTitle: TextView
+    var webViewTitle: String? = null
     var url = "https://www.baidu.com"
     var landspace = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        landspace = intent.getBooleanExtra("landspace",false)
-        if (landspace){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
-        }
+//        landspace = intent.getBooleanExtra("landspace", false)
+//        if (landspace) {
+//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE)
+//        }
         Log.d(TAG, "onCreate")
-        content = LinearLayout(this)
-        val css = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-        )
-        content?.layoutParams = css
-        setContentView(content)
-        intent.getStringExtra("title")?.let { title = it }
+        setStatusBar()
+        setContentView(R.layout.activity_x5_webview)
+        initView()
+
+        intent.getStringExtra("title")?.let { webViewTitle = it }
         intent.getStringExtra("url")?.let { url = it }
-        setTitle(title)
     }
 
     override fun onResume() {
@@ -47,67 +50,62 @@ class X5WebViewActivity : Activity() {
 
         if (QbSdk.canLoadX5(this)) {
             Log.i(TAG, "已安装好，直接显示")
-            createWebview()
+            createWebView()
         } else {
             Log.i(TAG, "新安装")
             val ok = QbSdk.preinstallStaticTbs(this)
             Log.i(TAG, "安装结果：$ok")
-            createWebview()
+            createWebView()
+        }
 
-//            Thread(Runnable {
-//                val ok = QbSdk.preinstallStaticTbs(this)
-//                runOnUiThread {
-//                    Log.i(TAG, "安装结果：$ok")
-//                    createWebview()
-//                }
-//            }).start()
+        webView?.onResume()
+        webView?.resumeTimers()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        webView?.onPause()
+        webView?.pauseTimers()
+    }
+
+    private fun initView() {
+        tvTitle = findViewById(R.id.tv_title)
+        findViewById<ImageView>(R.id.btn_back).setOnClickListener {
+            onBackPressed()
         }
     }
 
-    private fun loadX5Kernel() {
-
-    }
-
-    private fun createWebview() {
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun createWebView() {
         //手动创建WebView，显示到容器中，这样就能保证WebView一定是在X5内核准备好后创建的
-        webView = WebView(applicationContext)
-        val css = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-        )
-        content?.addView(webView, css)
+        webView = findViewById<WebView>(R.id.webView)
 
-        webView?.setWebViewClient(webViewClient)
-        webView?.setWebChromeClient(webChromeClient)
-        val webSettings = webView?.getSettings()
-        webSettings?.setJavaScriptEnabled(true)
-        webSettings?.setAllowFileAccess(true)
-        webSettings?.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN)
-        webSettings?.setSupportZoom(true)
-        webSettings?.setBuiltInZoomControls(true)
+        webView?.webViewClient = webViewClient
+        webView?.webChromeClient = webChromeClient
+
+        //移除有风险的WebView系统隐藏接口漏洞
+        webView?.removeJavascriptInterface("searchBoxJavaBridge_")
+        webView?.removeJavascriptInterface("accessibility")
+        webView?.removeJavascriptInterface("accessibilityTraversal")
+
+        val webSettings = webView?.settings
+        webSettings?.javaScriptEnabled = true
+        webSettings?.javaScriptEnabled = true
+        webSettings?.domStorageEnabled = true
+        webSettings?.javaScriptCanOpenWindowsAutomatically = true
         webSettings?.setSupportMultipleWindows(true)
-        webSettings?.setUseWideViewPort(true)
-        webSettings?.setLoadWithOverviewMode(true)
-        webSettings?.setDisplayZoomControls(false)//设定缩放控件隐藏
-        webSettings?.setDomStorageEnabled(true)
-        webSettings?.setAppCacheEnabled(true)
-        webSettings?.setDomStorageEnabled(true)
-        webSettings?.setAllowContentAccess(true)
-        webSettings?.setSavePassword(true)
-        webSettings?.setSaveFormData(true)
-        webSettings?.setLoadsImagesAutomatically(true)
-        webSettings?.setBlockNetworkImage(false)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            webSettings?.setMediaPlaybackRequiresUserGesture(false)
+        webSettings?.setGeolocationEnabled(false)
+        webSettings?.blockNetworkImage = false
+        webSettings?.setSupportZoom(true)
+        webSettings?.pluginState = WebSettings.PluginState.ON
+        webSettings?.useWideViewPort = true
+        webSettings?.allowFileAccess = true // 允许访问文件
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webSettings?.mixedContentMode?.let { webSettings.mixedContentMode = it }
         }
-        webSettings?.setJavaScriptCanOpenWindowsAutomatically(false)
 
-//      var url = "https://10.155.0.134:31311"
-//        var url =  "https://10.155.0.134:31311/static/testvideo/video.html?sid=60cbd910-d555-11ea-af73-45d5ffed74da&userName=cross&token=09080DC0E2A711EA9A1E5DA467561DB4&serverAddress=wss://10.155.0.135:30670/hari&accountId=AZ019121"
-//      var url = "https://apprtc.webrtcserver.cn/r/319960624"
         webView?.loadUrl(url)
-        Log.d(TAG,"load ${url}")
-
+        Log.d(TAG, "X5WebViewActivity load $url")
     }
 
     var webViewClient: WebViewClient = object : WebViewClient() {
@@ -119,7 +117,7 @@ class X5WebViewActivity : Activity() {
 
         override fun onReceivedError(p0: WebView?, p1: WebResourceRequest?, p2: WebResourceError?) {
             super.onReceivedError(p0, p1, p2)
-            Log.d(TAG, "webview onReceivedError :description : ${p2?.description}  errorCode :"+p2?.errorCode)
+            Log.d(TAG, "webview onReceivedError :description : ${p2?.description}  errorCode :" + p2?.errorCode)
         }
 
         override fun onReceivedSslError(p0: WebView?, p1: SslErrorHandler?, p2: SslError?) {
@@ -129,18 +127,20 @@ class X5WebViewActivity : Activity() {
         }
     }
 
-    var webChromeClient: com.tencent.smtt.sdk.WebChromeClient = object : com.tencent.smtt.sdk.WebChromeClient() {
-        override fun onProgressChanged(p0: WebView?, p1: Int) {
-            super.onProgressChanged(p0, p1)
-            Log.d(TAG, "webview onProgressChanged : $p1")
-        }
-    }
+    var webChromeClient: com.tencent.smtt.sdk.WebChromeClient =
+        object : com.tencent.smtt.sdk.WebChromeClient() {
+            override fun onProgressChanged(p0: WebView?, p1: Int) {
+                super.onProgressChanged(p0, p1)
+                Log.d(TAG, "webview onProgressChanged : $p1")
+            }
 
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause")
-        webView?.onPause()
-    }
+            override fun onReceivedTitle(view: WebView, title: String) {
+                if (!TextUtils.isEmpty(title)) {
+                    tvTitle.text = webViewTitle ?: title
+                }
+                super.onReceivedTitle(view, title)
+            }
+        }
 
     override fun onDestroy() {
         if (null != webView) {
@@ -157,14 +157,27 @@ class X5WebViewActivity : Activity() {
         super.onDestroy()
         System.exit(0)
         Log.d(TAG, "onDestroy")
-//        webView?.destroy()
     }
 
     override fun onBackPressed() {
-        if (webView!!.canGoBack()){
+        val canGoBack = webView?.canGoBack() ?: false
+        if (canGoBack) {
             webView?.goBack()
-        }else{
+        } else {
             finish()
+        }
+    }
+
+    /**
+     * 设置状态栏颜色为透明色
+     */
+    private fun setStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);//窗口透明的导航栏
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);//窗口透明的状态栏
+            requestWindowFeature(Window.FEATURE_NO_TITLE);//隐藏标题栏
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = Color.TRANSPARENT;
         }
     }
 }
